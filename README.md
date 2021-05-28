@@ -7,3 +7,8 @@
   
 # DDL
 1. Jun 3. Demo for rep count.
+
+#TODO
+1. Get the base value.
+2. pattern recognition.
+3. roll
