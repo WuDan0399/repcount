@@ -118,17 +118,11 @@ int main(){
     int8_t aO;
     int8_t samples2 = 0;
     int8_t count = 0;
-    int8_t reps = 0; //repeated?
+    int8_t reps = 0;
     int16_t gFinal[3], aFinal[3];
     element yfilteredinput[10], yfilteredoutput[10] = {0};
     element xfilteredinput[10], xfilteredoutput[10] = {0};
     element zfilteredinput[10], zfilteredoutput[10] = {0};
-    //************moving average accel**********************
-    int32_t xAvgAccel[20];
-    int32_t yAvgAccel[20];
-    int32_t zAvgAccel[20];
-
-    //******************************************************
     int16_t gyroz_window[200];
     bool peak = false;
     bool trough = false;
@@ -200,7 +194,7 @@ int main(){
         
         /* Working */
         if (gz_count < 200){
-            gyroz_window[gz_count++] = abs(imu.gz_raw); //???What is gyroz window for?
+            gyroz_window[gz_count++] = abs(imu.gz_raw);
 
         }
         else{
@@ -730,12 +724,10 @@ void computeAngles_mod()
 	yaw = atan2f(m_q1*m_q2 + m_q0*m_q3, 0.5f - m_q2*m_q2 - m_q3*m_q3);
 	anglesComputed = 1;
 
-    char singr = roll>0?' ':'-';
-    char singp = pitch>0?' ':'-';
-    char singy = yaw>0?' ':'-';
-    printf("Roll: %c%f Pitch: %c%f Yaw: %c%f\n", singr, abs(roll), singp, abs(pitch), singy, abs(yaw));
-    //printf("Roll: %f Pitch: %f Yaw: %f\n", roll, pitch, yaw);
-
+    // char singr = roll>0?' ':'-';
+    // char singp = pitch>0?' ':'-';
+    // char singy = yaw>0?' ':'-';
+    // printf("%c%f %c%f %c%f\n", singr, abs(roll), singp, abs(pitch), singy, abs(yaw));
 
     // if ((abs(pitch-o_pitch)>1.5 & abs(pitch-o_pitch)<3) ^ (abs(yaw-o_yaw)>1.5 & abs(yaw-o_yaw)<3)){
     //     printf("New montion detected, Recount.\n");
@@ -750,12 +742,6 @@ void computeAngles_mod()
         trough = true;
         update = false;
     }
-    //new calculation
-    
-    //*****************
-
-
-
     if(peak && trough && update){
         peak = false;
         trough = false;
