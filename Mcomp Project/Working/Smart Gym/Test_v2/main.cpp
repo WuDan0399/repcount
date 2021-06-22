@@ -2,10 +2,12 @@
 #include "LSM9DS1.h"
 #include "mbed_power_mgmt.h"
 
+#include <cstdint>
 #include <math.h>
 #include <time.h>
 #include <chrono>
 #include <deque>
+#include <cmath>
 
 #define PI 3.14159265358979323846
 
@@ -27,9 +29,9 @@ bool peak, trough, update;
 
 clock_t timer;
 
-std::deque<float> gyroz_window;
+std::deque<int32_t> gyroz_window;
 
-float average();
+float getAverage();
 void repsCounter();
 float getTime();
 bool checkStationary();
@@ -109,7 +111,7 @@ int main()
             drift_counter = 0;
         }
         //printf("%f %f %f %f\n", gyroAngleX, gyroAngleY, gyroAngleZ, elapsedTime);
-        //printf("%f %f %d\n", gyroAngleZ, baseValue, 0);
+        printf("%f %f %f\n", gyroAngleZ, baseValue, avg_value);
         //printf("%f\n", (float)((float)timer/CLOCKS_PER_SEC));
         //printf("%d %d %d %d %d %d\n", imu.gx_raw, imu.gy_raw, imu.gz_raw,imu.ax_raw,imu.ay_raw, imu.az_raw);
         stationary_flag = checkStationary();
@@ -117,7 +119,7 @@ int main()
         //update reference line (baseValue) every 1s
         if (getTime() - correction_timer > 1 && gyroz_window.size() >= 80)
         {
-            avg_value = average();
+            avg_value = getAverage();
             if(stationary_flag == true)
             {
                 baseValue = avg_value;
@@ -148,7 +150,7 @@ int main()
                     }
                     else if(abs(baseValue - avg_value) < 30)
                     {
-                        //avg value too far from reference line, move reference line closer to avg value
+                        //avg value too close to reference line, move referencee line further away from avg value
                         baseValue = baseValue - (32 - abs(baseValue - avg_value));
                     }
                 }
@@ -178,10 +180,8 @@ int main()
         }
 
         repsCounter();
-
-
-
-        gyroz_window.push_front(gyroAngleZ);
+        //TODO: error correction(rebase to 0?) if drift too much
+        gyroz_window.push_front(int(gyroAngleZ*1000));
 
         if(gyroz_window.size() > 100)
             {
@@ -195,19 +195,21 @@ int main()
 }
 
 /*
-* Get the average value of the data point in gyroz_window.
-* @return average value.
+* Get the average of all values of the data point in gyroz_window.
+* @return average of all values.
 */
-float average()
+float getAverage()
 {
-    //get the current average value
-    float sum;
+    int32_t sum = 0;
+    float average;
     for(int i = 0; i < gyroz_window.size(); i++)
     {
         sum += gyroz_window[i];
-        //printf("%f",gyroz_window[i]);
     }
-    return sum / gyroz_window.size();
+
+    average = sum / float(gyroz_window.size() * 1000);
+    //printf("Average = %f, Size = %d\n", average, gyroz_window.size());
+    return average;
 }
 
 /*
@@ -257,12 +259,12 @@ void repsCounter()
         if(direction == 1)
         {
             //horizontal
-            printf("%c %d\n",'-', repsCount);
+            //printf("%c %d\n",'-', repsCount);
         }
         else if(direction == 2)
         {
 
-            printf("%c %d\n",'|', repsCount);
+            //printf("%c %d\n",'|', repsCount);
         }
         //printf("%d\n", repsCount);
     }
@@ -287,8 +289,8 @@ float getTime()
 */
 bool checkStationary()
 {    
-    float max = -10000; 
-    float min = 10000;
+    float max = -10000000; 
+    float min = 10000000;
     float diff = 0;
     for(int i = 0; i < gyroz_window.size(); i++)
     {
@@ -302,7 +304,7 @@ bool checkStationary()
         }
     }
     diff = abs(max - min);
-    if(diff < 30)
+    if(diff < 30000) //30 degree * 1000
     {
         return true;
     }
