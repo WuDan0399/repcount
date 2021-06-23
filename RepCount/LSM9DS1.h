@@ -382,7 +382,7 @@
 #define _LSM9DS1_H__
  
 #include "mbed.h"
-#include "medianfilter.h"
+//#include "medianfilter.h"
  
 /////////////////////////////////////////
 // LSM9DS1 Accel/Gyro (XL/G) Registers //
