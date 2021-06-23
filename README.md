@@ -38,7 +38,7 @@ Note: The mbed-os library cannot be uploaded to github due to file size limitati
 5. `cd repcount`
 6. Pull the latest update code from this repo.
        * `git pull origin main`
-7. To modify the application, locate and modify the file `main.cpp` in `RepCount` workspace.
+7. (opt) A decription file for current application can be found in `docs\Rep_count_algoirthm.md`. To modify the application, locate and modify the file `main.cpp` in `RepCount` workspace. 
 8. Build the program inside Mbed Studio.
 9. Locate the file `RepCount.bin` in `RepCount/BUILD/NUCLEO_L476RG/ARMC6`.
 10. Copy the binary file into `STLINK_V3S` folder.
