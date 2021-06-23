@@ -21,7 +21,7 @@ Rep counter is a smart gym application to record the number of reps an user have
 ## Mbed Studio
 
 1. Download and install the latest Mbed Studio [here](https://os.mbed.com/studio/).
-3. Open the workspace **Test_v2**.
+3. Loocate and open the workspace **Test_v2** in `~/repcount/Mcomp Project/Working/Smart Gym`.
 2. Set Target as **NUCLEO-L476RG** inside Mbed Studio.
 
 ## Arduino IDE
@@ -30,7 +30,10 @@ Rep counter is a smart gym application to record the number of reps an user have
 3. Choose the correct port that the Manuca Air is connected.
 3. Open Serial monitor or Serial plotter to observe the output.
 
+## Modifying the Code
+1. Locate and modify the file `main.cpp` in Test_v2 workspace.
+
 ## Programming the Board
-1. Build the program inside Mbed Studio
-2. Locate the file `Test_v2.bin` in `~/repcount/Mcomp Project/Working/Smart Gym/Test_v2/BUILD/NUCLEO_L476RG/ARMC6`
+1. Build the program inside Mbed Studio.
+2. Locate the file `Test_v2.bin` in `~/repcount/Mcomp Project/Working/Smart Gym/Test_v2/BUILD/NUCLEO_L476RG/ARMC6`.
 3. Copy the file into `STLINK_V3S` folder.
