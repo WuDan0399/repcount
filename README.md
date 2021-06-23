@@ -1,5 +1,4 @@
 # Reps Counter
-
 Rep counter is a smart gym application to record the number of reps an user have done with dumbbells.
 
 ## Recommended System
