@@ -36,7 +36,7 @@ Rep counter is a smart gym application to record the number of reps an user have
       * `unzip repcount_23062021.zip`
 5. `cd repcount`
 6. Pull the latest update code from this repo.
-       * `git pull origin main`
+      * `git pull origin main`
 7. (opt) A decription file for current application can be found in `docs\Rep_count_algoirthm.md`. To modify the application, locate and modify the file `main.cpp` in `RepCount` workspace. 
 8. Build the program inside Mbed Studio.
 9. Locate the file `RepCount.bin` in `RepCount/BUILD/NUCLEO_L476RG/ARMC6`.
