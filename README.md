@@ -2,10 +2,10 @@
 
 Rep counter is a smart gym application to record the number of reps an user have done with dumbbells.
 
-# Recommended System
+## Recommended System
 * Windows, MacOS, Ubuntu 18.04
 
-# Hardware Requirements
+## Hardware Requirements
 * Manuca Air and sensor boards.
 * [STLINK V3SET](https://www.st.com/en/development-tools/stlink-v3set.html).
 * USB to TTL Serial cable.
