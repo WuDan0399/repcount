@@ -15,7 +15,7 @@ Rep counter is a smart gym application to record the number of reps an user have
 
 1. Download the base code with the mbed-os library [here](https://drive.google.com/drive/folders/1or_4bsE6CyxNxOh8ZdXjUYpasFRZvgPO?usp=sharing).
 2. Pull the latest update code from this repo.
-    * `git clone https://github.com/WuDan0399/repcount.git`
+    * `git pull origin main`
 
 
 ## Mbed Studio
