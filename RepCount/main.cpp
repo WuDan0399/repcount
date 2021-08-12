@@ -8,6 +8,7 @@
 #include <chrono>
 #include <deque>
 #include <cmath>
+#include <string>
 
 #define PI 3.14159265358979323846
 
@@ -16,7 +17,14 @@ DigitalOut pwron2(PF_4);
 DigitalOut pwron1(PG_15);
 DigitalOut shutTof(PG_1);
 DigitalOut pwronTof(PF_5);
-int32_t AccX, AccY, AccZ;
+
+PinName TX = PC_4;
+PinName RX = PC_5;
+
+static BufferedSerial serial_comm(TX, RX, 115200);
+
+int32_t AccX, AccY;
+float AccZ;
 float GyroX, GyroY, GyroZ;
 float AccSensitivty, GyroSensitivty;
 float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ;
@@ -26,6 +34,12 @@ float peakTimeCounter, troughTimeCounter;
 int repsCount;
 
 bool peak, trough, update;
+
+//messages
+const char reset_message[] = "Resetting reps count\n";
+const char normal_rep_count_message[] = "Normal rep count mode\n";
+const char vert_rep_count_message[] = "Vertical rep count mode\n";
+//
 
 //vert~~~~~~~~~~~~
 std::deque<int32_t> accx_reference_window;
@@ -96,6 +110,10 @@ int main()
     float acc_timer = 0;
     //~~~~~~~~~~~~~~~
 
+    int value = 0;
+
+    
+
     while(1)
     {
         while(getTime() - main_timer_delay < 0.020)
@@ -110,7 +128,7 @@ int main()
         AccSensitivty = 2.0 / 32768.0;
         AccX = imu.ax_raw * AccSensitivty * 1000; //scale by 1000
         AccY = imu.ay_raw * AccSensitivty * 1000;
-        AccZ = imu.az_raw * AccSensitivty * 1000;
+        AccZ = imu.az_raw * AccSensitivty;
 
         //*****************************************************************Testing~
         //reduce noise
@@ -187,7 +205,7 @@ int main()
         //printf("%d %d\n",avgX, avgY);
         //*****************************************************************
 
-        //printf("%d %d\n",AccX, AccY);
+        //printf("%f\n",AccZ);
         // prevX = AccX;
         // prevY = AccY;
         //printf("%d %d %d\n",imu.ax_raw, imu.ay_raw, imu.az_raw);
@@ -281,7 +299,8 @@ int main()
         {
             if(checkStationary(false))
             {
-                printf("Resetting reps count\n");
+                //printf("Resetting reps count\n");
+                serial_comm.write(reset_message, sizeof(reset_message));
                 repsCount = 0;
                 vertRepsCount = 0;
                 gyroAngleZ = 0;
@@ -399,7 +418,8 @@ void repsCounter()
         if(repCountMode == 0)
         {
             repCountMode = 1;
-            printf("setting normal rep count\n");
+            //printf("setting normal rep count\n");
+            //serial_comm.write(normal_rep_count_message, sizeof(normal_rep_count_message)+1);
         }
 
         peak = false;
@@ -409,12 +429,19 @@ void repsCounter()
         if(direction == 1)
         {
             //horizontal
-            printf("%c %d\n",'-', repsCount);
+            string message_LR = "- " + to_string(repsCount) + "\n";
+            char message[message_LR.length() + 1];
+            strcpy(message, message_LR.c_str());
+            serial_comm.write(message, sizeof(message));
+            //printf("%c %d\n",'-', repsCount);
         }
         else if(direction == 2)
         {
-
-            printf("%c %d\n",'|', repsCount);
+            string message_UD = "| " + to_string(repsCount) + "\n";
+            char message[message_UD.length() + 1];
+            strcpy(message, message_UD.c_str());
+            serial_comm.write(message, sizeof(message));
+            //printf("%c %d\n",'|', repsCount);
         }
         //printf("%d\n", repsCount);
     }
@@ -487,14 +514,20 @@ void vertRepCounter()
         if(repCountMode == 0)
         {
             repCountMode = 2;
-            printf("setting vertical rep count\n");
+            //serial_comm.write(vert_rep_count_message, sizeof(vert_rep_count_message)+1);
+            //printf("setting vertical rep count\n");
         }
         firstPeakFlag = false;
         secondPeakFlag = false;
         vertTroughFlag = false;
         firstPeakDirection = 0;
         vertRepsCount += 1;
-        printf("|| %d \n", vertRepsCount);
+        
+        string message_s = "|| " + to_string(vertRepsCount) + "\n";
+        char message[message_s.length() + 1];
+        strcpy(message, message_s.c_str());
+        serial_comm.write(message, sizeof(message));
+        //printf("|| %d \n", vertRepsCount);
     }
     else if(currTime - firstPeakTimer > 2 && vertRepTimeout == false)
     {
